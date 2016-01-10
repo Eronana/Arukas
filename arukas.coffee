@@ -108,13 +108,13 @@ gen=->
         posts.push p
         for x in ['categories','tags'] then p[x]?.map (y)->
             xpush xstatics[x],y,p
-            url=sanitize y
-            if url in xstatics[x]
+            xurl=sanitize y
+            if xurl in xstatics[x]
                 id=1
-                while "#{url}-#{id}" in x[2] then id++
-                url="#{url}-#{id}"
-            xstatics["#{x}_url"][y]=url
-            xstatics["url_#{x}"][url]=y
+                while "#{xurl}-#{id}" in x[2] then id++
+                xurl="#{xurl}-#{id}"
+            xstatics["#{x}_url"][y]=xurl
+            xstatics["url_#{x}"][xurl]=y
     console.log "Process StaticData..."
     posts.sort (a,b)->if a.date>b.date then -1 else 1
     for i in [0...posts.length-1] then posts[i].next=posts[i+1].url
@@ -136,8 +136,8 @@ gen=->
         console.log "write #{name}"
         data=xstatics[name]
         for k,v of data
-            url=xstatics["#{name}_url"][k]
-            dir="deploy/data/#{name}/#{url}/"
+            xurl=xstatics["#{name}_url"][k]
+            dir="deploy/data/#{name}/#{xurl}/"
             unless fs.existsSync dir then fs.mkdirSync dir
             v.sort (a,b)->if a.date>b.date then -1 else 1
             write_page v,dir,config.per_page,get_excerpt
