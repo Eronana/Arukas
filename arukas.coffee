@@ -11,6 +11,7 @@ UglifyJS=require 'uglify-js'
 http=require 'http'
 url=require 'url'
 path=require 'path'
+spawn=require('child_process').spawnSync
 lang_map={
     'C#':'cs'
     'C++11':'cpp'
@@ -29,7 +30,7 @@ marked.setOptions {
     breaks:true
     renderer
 }
-
+getnow=->moment().format 'YYYY-MM-DD hh:ss:mm'
 sanitize=(s)->s.replace(/[\~\!\@\#\$\%\^\&\*\(\)\_\+\=\-\`\[\]\\\|\}\{\;\'\:\"\,\.\/\?\>\<\s]/mg,' ').trim().replace(/\s+/mg,'-')
 posts_dir='source/_posts/'
 parse_post=(filename)->
@@ -59,11 +60,26 @@ get_excerpt=(post)->{
     content:post.excerpt ? post.content
 }
 String.prototype.capitalize=->this[0].toUpperCase()+this[1..]
+git=(cmd...)->
+    ret=spawn("git",cmd,{cwd:'deploy'})
+    stdout=ret.stdout.toString()
+    unless stdout is '' then console.log stdout
+    ret.status is 0
+
+deploy=->
+    git('add','-A') and
+    git('commit','-am',"\"Update on:#{getnow()}\"") and
+    git('push','-u',config.repo,"HEAD:#{config.branch}",'--force')
+
 clear_dir=->
-    rimraf.sync 'deploy'
-    fs.mkdirSync 'deploy'
+    if fs.existsSync 'deploy'
+        for f in fs.readdirSync 'deploy'
+            unless f is '.git' then rimraf.sync "deploy/#{f}"
+    else
+        fs.mkdirSync 'deploy'
+        git 'init'
     copyDir.sync 'frontend','deploy'
-    copyDir.sync 'source','deploy',(s,p,f)->f!='_posts'
+    copyDir.sync 'source','deploy',(s,p,f)->f!='_posts' and f!='.git'
     fs.mkdirSync 'deploy/data'
     fs.mkdirSync 'deploy/data/post'
     fs.mkdirSync 'deploy/data/page'
@@ -71,7 +87,7 @@ clear_dir=->
     fs.mkdirSync 'deploy/data/tags'
 gen_js=(StaticData)->
     cs=fs.readFileSync('template/arukas.coffee').toString()
-    cs=cs.replace('{{StaticData}}',JSON.stringify(StaticData)).replace('{{config}}',JSON.stringify(config))
+    cs=cs.replace('{{StaticData}}',JSON.stringify(StaticData)).replace('{{config}}',JSON.stringify(config.site))
     UglifyJS.minify(coffee.compile(cs),{fromString:true}).code
 gen=->
     posts=[]
@@ -135,7 +151,7 @@ get_filename=(title)->
 
 newpost=(title)->
     filename=get_filename(sanitize title)
-    fs.writeFileSync filename,fs.readFileSync('template/post.md').toString().replace('{{title}}',title).replace('{{date}}',moment().format 'YYYY-MM-DD hh:ss:mm')
+    fs.writeFileSync filename,fs.readFileSync('template/post.md').toString().replace('{{title}}',title).replace('{{date}}',getnow())
     filename
 
 server=->
@@ -188,3 +204,10 @@ switch process.argv[2]
     when 'new' then console.log newpost(process.argv[3])
     when 'gen' then gen()
     when 'server' then server()
+    when 'deploy' then deploy()
+    when 'gs'
+        gen()
+        server()
+    when 'gd'
+        gen()
+        deploy()
