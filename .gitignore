@@ -1,5 +1,6 @@
+/source/*
+!/source/_posts
+!source/_posts/Hello-Arukas.md
 /deploy
-/source
-!/source/_posts/Hello-Arukas.md
 /node_modules
 .DS_Store
