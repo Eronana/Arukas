@@ -3,7 +3,7 @@ yaml=require 'yamljs'
 marked=require 'marked'
 config=require './config'
 highlight=require './lib/highlight.js'
-momemt=require 'moment'
+moment=require 'moment'
 rimraf=require 'rimraf'
 copyDir=require 'copy-dir'
 coffee=require 'coffee-script'
@@ -60,7 +60,8 @@ get_excerpt=(post)->{
 }
 String.prototype.capitalize=->this[0].toUpperCase()+this[1..]
 clear_dir=->
-    rimraf.sync 'deploy/*'
+    rimraf.sync 'deploy'
+    fs.mkdirSync 'deploy'
     copyDir.sync 'frontend','deploy'
     copyDir.sync 'source','deploy',(s,p,f)->f!='_posts'
     fs.mkdirSync 'deploy/data'
