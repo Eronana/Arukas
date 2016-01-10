@@ -68,7 +68,7 @@ BaseView=(v,page)->
                 m '.clearfix'
             ]
             m 'footer#footer.inner',[
-                m '.alignleft',config.copyright
+                m '.alignleft',m.trust config.copyright
                 m '.clearfix'
             ]
         ]
