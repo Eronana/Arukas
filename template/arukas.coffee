@@ -144,7 +144,7 @@ Post={
                 if config.duoshuo_short_name? then m '.ds-thread',{
                     "data-thread-key":ctrl.url
                     "data-title":post.title
-                    config:(element,isInit,context)->unless isInit then DUOSHUO.EmbedThread element
+                    config:(element,isInit,context)->DUOSHUO.EmbedThread element
                 }
             ]
         else
