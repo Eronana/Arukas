@@ -1,10 +1,10 @@
 site: 
     title: Arukas
     description: A static blog build on mithril.js
-    copyright: &copy; 2015 Erona
+    copyright: '&copy; 2015 Erona'
     route_mode: search
 per_page: 10
 recents: 10
 deploy: 
-    repo: 'git@github.com:xxx/xxxx.git'
-    branch: 'master'
+    repo: git@github.com:xxx/xxxx.git
+    branch: master
