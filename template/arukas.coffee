@@ -139,7 +139,14 @@ Post={
         post=ctrl.post()
         if post?
             document.title="#{post.title} | #{config.title}"
-            PostView post
+            [
+                PostView post
+                if config.duoshuo_short_name? then m '.ds-thread',{
+                    "data-thread-key":ctrl.url
+                    "data-title":post.title
+                    config:(element,isInit,context)->unless isInit then DUOSHUO.EmbedThread element
+                }
+            ]
         else
             'No this post!'
 }
@@ -172,7 +179,6 @@ Post={
         else
             ['No this page! ',m.a 'a',"/#{x[0]}/#{ctrl.nameurl}/#{ctrl.page-1}/",'BACK']
 })for x in [['categories','category'],['tags','tag']])
-
 
 m.route.mode=config.route_mode
 m.route document.body, '/', {

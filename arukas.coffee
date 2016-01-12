@@ -90,6 +90,11 @@ gen_js=(StaticData)->
     cs=fs.readFileSync('template/arukas.coffee').toString()
     cs=cs.replace('{{StaticData}}',JSON.stringify(StaticData)).replace('{{config}}',JSON.stringify(config.site))
     UglifyJS.minify(coffee.compile(cs),{fromString:true}).code
+gen_html=()->
+    html=fs.readFileSync('template/index.html').toString()
+    head_script=''
+    if config.site.duoshuo_short_name? then head_script+="var duoshuoQuery={short_name:'#{config.site.duoshuo_short_name}'};"
+    html.replace '{{head_script}}',head_script
 gen=->
     posts=[]
     xstatics={
@@ -129,6 +134,8 @@ gen=->
     clear_dir()
     console.log "write arukas.js"
     fs.writeFileSync 'deploy/js/arukas.js',gen_js StaticData
+    console.log "write index.html"
+    fs.writeFileSync 'deploy/index.html',gen_html()
     console.log "write pages"
     write_page posts,'deploy/data/page/',config.per_page,get_excerpt
     console.log "write posts"
