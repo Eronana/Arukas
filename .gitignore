@@ -1,4 +1,5 @@
-/source/*
+/config.yml
+/source
 /deploy
 /node_modules
 .DS_Store

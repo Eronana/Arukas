@@ -1,7 +1,6 @@
 fs=require 'fs'
 yaml=require 'yamljs'
 marked=require 'marked'
-config=require './config'
 highlight=require './lib/highlight.js'
 moment=require 'moment'
 rimraf=require 'rimraf'
@@ -12,6 +11,8 @@ http=require 'http'
 url=require 'url'
 path=require 'path'
 spawn=require('child_process').spawnSync
+unless fs.existsSync 'config.yml' then copyDir.sync 'template/init','.'
+config=yaml.load('config.yml')
 lang_map={
     'C#':'cs'
     'C++11':'cpp'
@@ -69,7 +70,7 @@ git=(cmd...)->
 deploy=->
     git('add','-A') and
     git('commit','-am',"\"Update on:#{getnow()}\"") and
-    git('push','-u',config.repo,"HEAD:#{config.branch}",'--force')
+    git('push','-u',config.deploy.repo,"HEAD:#{config.deploy.branch}",'--force')
 
 clear_dir=->
     if fs.existsSync 'deploy'
@@ -211,3 +212,19 @@ switch process.argv[2]
     when 'gd'
         gen()
         deploy()
+    else
+        console.log "No this option: #{process.argv[2]}"
+        console.log '''Usage:
+        coffee arukas.coffee new title
+        \tCreate a new post
+        coffee arukas.coffee gen
+        \tGenerate website in ./deploy
+        coffee arukas.coffee server
+        \tStart a server on port 3000
+        coffee arukas.coffee deploy
+        \tdeploy website
+        coffee arukas.coffee gs
+        \tDo gen and server
+        coffee arukas.coffee gs
+        \tDo gen and deploy
+        '''
