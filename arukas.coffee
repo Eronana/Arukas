@@ -31,7 +31,7 @@ marked.setOptions {
     breaks:true
     renderer
 }
-getnow=->moment().format 'YYYY-MM-DD hh:ss:mm'
+getnow=->moment().format 'YYYY-MM-DD HH:ss:mm'
 sanitize=(s)->s.replace(/[\~\!\@\#\$\%\^\&\*\(\)\_\+\=\-\`\[\]\\\|\}\{\;\'\:\"\,\.\/\?\>\<\s]/mg,' ').trim().replace(/\s+/mg,'-')
 posts_dir='source/_posts/'
 parse_post=(filename)->
