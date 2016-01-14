@@ -2,7 +2,7 @@
 A static blog build on mithril.js
 # WTF?
 The difference of other static blog is all data is json and render in frontend by mithril.js<br>
-I used to be an Hexo user,so somethings such as theme [Light](https://github.com/hexojs/hexo-theme-light) are from [Hexo](https://github.com/hexojs/hexo)
+I used to be a Hexo user,so somethings such as theme [Light](https://github.com/hexojs/hexo-theme-light) are from [Hexo](https://github.com/hexojs/hexo)
 # Installation
 ```bash
 $ git clone git@github.com:Eronana/Arukas.git
